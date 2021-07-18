@@ -103,6 +103,16 @@ def bot_help(update, context):
 '''
     sendMessage(help_string, context.bot, update)
 
+    
+botcmds = [
+BotCommand(f'{BotCommands.MirrorCommand}', 'Start Mirroring'),
+BotCommand(f'{BotCommands.TarMirrorCommand}','Upload tar (zipped) file'),
+BotCommand(f'{BotCommands.UnzipMirrorCommand}','Extract files'),
+BotCommand(f'{BotCommands.CloneCommand}','Copy file/folder to Drive'),
+BotCommand(f'{BotCommands.WatchCommand}','Mirror YT-DL support link'),
+BotCommand(f'{BotCommands.TarWatchCommand}','Mirror Youtube playlist link as tar'),
+BotCommand(f'{BotCommands.StatusCommand}','Get Mirror Status message')]
+
 
 def main():
     fs_utils.start_cleanup()
@@ -112,6 +122,7 @@ def main():
             chat_id, msg_id = map(int, f)
         bot.edit_message_text("Restarted successfully!", chat_id, msg_id)
         os.remove(".restartmsg")
+    bot.set_my_commands(botcmds)
 
     start_handler = CommandHandler(BotCommands.StartCommand, start,
                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
