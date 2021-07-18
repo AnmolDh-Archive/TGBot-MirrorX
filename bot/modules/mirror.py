@@ -152,13 +152,13 @@ class MirrorListener(listeners.MirrorListeners):
 
     def onUploadComplete(self, link: str, size):
         with download_dict_lock:
-            msg = f'<b>Filename : </b><code>{download_dict[self.uid].name()}</code>\n<b>Size : </b><code>{size}</code>'
+            msg = f'𝐅𝐢𝐥𝐞𝐧𝐚𝐦𝐞: <code>{download_dict[self.uid].name()}</code>\n\n𝐒𝐢𝐳𝐞: <i>{size}</i>'
             buttons = button_build.ButtonMaker()
             if SHORTENER is not None and SHORTENER_API is not None:
                 surl = requests.get(f'https://{SHORTENER}/api?api={SHORTENER_API}&url={link}&format=text').text
-                buttons.buildbutton("💾Drive Link💾", surl)
+                buttons.buildbutton("☁️ 𝐃𝐫𝐢𝐯𝐞 𝐋𝐢𝐧𝐤", surl)
             else:
-                buttons.buildbutton("💾Drive Link💾", link)
+                buttons.buildbutton("☁️ 𝐃𝐫𝐢𝐯𝐞 𝐋𝐢𝐧𝐤", link)
             LOGGER.info(f'Done Uploading {download_dict[self.uid].name()}')
             if INDEX_URL is not None:
                 url_path = requests.utils.quote(f'{download_dict[self.uid].name()}')
@@ -167,9 +167,9 @@ class MirrorListener(listeners.MirrorListeners):
                     share_url += '/'
                 if SHORTENER is not None and SHORTENER_API is not None:
                     siurl = requests.get(f'https://{SHORTENER}/api?api={SHORTENER_API}&url={share_url}&format=text').text
-                    buttons.buildbutton("🚀Index Link🚀", siurl)
+                    buttons.buildbutton("⚡ 𝐈𝐧𝐝𝐞𝐱 𝐋𝐢𝐧𝐤", siurl)
                 else:
-                    buttons.buildbutton("🚀Index Link🚀", share_url)
+                    buttons.buildbutton("⚡ 𝐈𝐧𝐝𝐞𝐱 𝐋𝐢𝐧𝐤", share_url)
             if BUTTON_THREE_NAME is not None and BUTTON_THREE_URL is not None:
                 buttons.buildbutton(f"{BUTTON_THREE_NAME}", f"{BUTTON_THREE_URL}")
             if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
@@ -181,7 +181,7 @@ class MirrorListener(listeners.MirrorListeners):
             else:
                 uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
             if uname is not None:
-                msg += f'\n\nReq. By 👉 : {uname}'
+                msg += f'\n\n𝐔𝐩𝐥𝐨𝐚𝐝𝐞𝐫: <i>{uname}</i>'
             try:
                 fs_utils.clean_download(download_dict[self.uid].path())
             except FileNotFoundError:
@@ -297,7 +297,7 @@ def _mirror(bot, update, isTar=False, extract=False):
 
     elif bot_utils.is_mega_link(link):
         if BLOCK_MEGA_LINKS:
-            sendMessage("Mega Links Are Blocked ✋", bot, update)
+            sendMessage("Mega Links Are Blocked!", bot, update)
         else:
             mega_dl = MegaDownloadHelper()
             mega_dl.add_download(link, f'{DOWNLOAD_DIR}/{listener.uid}/', listener)
