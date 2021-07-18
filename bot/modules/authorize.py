@@ -14,8 +14,6 @@ def authorize(update,context):
     reply_message = None
     message_ = None
     reply_message = update.message.reply_to_message
-    msg = ''
-    with open('authorized_chats.txt', 'a') as file:
     message_ = update.message.text.split(' ')
     if len(message_) == 2:
         chat_id = int(message_[1])
@@ -28,9 +26,6 @@ def authorize(update,context):
             # Trying to authorize a chat
             chat_id = update.effective_chat.id
             if chat_id not in AUTHORIZED_CHATS:
-                file.write(f'{chat_id}\n')
-                AUTHORIZED_CHATS.add(chat_id)
-                msg = 'Chat authorized'
                 msg = DbManger().db_auth(chat_id)
             else:
                 msg = 'Already authorized chat'
@@ -39,13 +34,8 @@ def authorize(update,context):
             # Trying to authorize someone in specific
             user_id = reply_message.from_user.id
             if user_id not in AUTHORIZED_CHATS:
-                file.write(f'{user_id}\n')
-                AUTHORIZED_CHATS.add(user_id)
-                msg = 'Person Authorized to use the bot!'
                 msg = DbManger().db_auth(user_id)
             else:
-                msg = 'Person already authorized'
-        sendMessage(msg, context.bot, update)
                 msg = 'User already authorized'
     sendMessage(msg, context.bot, update)
 
@@ -55,15 +45,10 @@ def unauthorize(update,context):
     reply_message = None
     message_ = None
     reply_message = update.message.reply_to_message
-    if reply_message is None:
-        # Trying to unauthorize a chat
-        chat_id = update.effective_chat.id
     message_ = update.message.text.split(' ')
     if len(message_) == 2:
         chat_id = int(message_[1])
         if chat_id in AUTHORIZED_CHATS:
-            AUTHORIZED_CHATS.remove(chat_id)
-            msg = 'Chat unauthorized'
                    msg = DbManger().db_unauth(chat_id)
         else:
             msg = 'User already unauthorized'
@@ -101,7 +86,6 @@ def addSudo(update,context):
         if reply_message is None:
             msg = "Give ID or Reply To message of whom you want to Promote"
         else:
-            msg = 'Already unauthorized chat'
             # Trying to authorize someone in specific
             user_id = reply_message.from_user.id
             if user_id not in SUDO_USERS:
@@ -124,19 +108,9 @@ def removeSudo(update,context):
         else:
             msg = 'Not a Sudo'
     else:
-        # Trying to authorize someone in specific
-        user_id = reply_message.from_user.id
-        if user_id in AUTHORIZED_CHATS:
-            AUTHORIZED_CHATS.remove(user_id)
-            msg = 'Person unauthorized to use the bot!'
         if reply_message is None:
             msg = "Give ID or Reply To message of whom you want to remove from Sudo"
         else:
-            msg = 'Person already unauthorized!'
-    with open('authorized_chats.txt', 'a') as file:
-        file.truncate(0)
-        for i in AUTHORIZED_CHATS:
-            file.write(f'{i}\n')
             user_id = reply_message.from_user.id
             if user_id in SUDO_USERS:
                 msg = DbManger().db_rmsudo(user_id)
@@ -156,10 +130,8 @@ def sendAuthChats(update,context):
 send_auth_handler = CommandHandler(command=BotCommands.AuthorizedUsersCommand, callback=sendAuthChats,
                                     filters=CustomFilters.owner_filter | CustomFilters.sudo_user)
 authorize_handler = CommandHandler(command=BotCommands.AuthorizeCommand, callback=authorize,
-                                    filters=CustomFilters.owner_filter & Filters.group)
                                     filters=CustomFilters.owner_filter | CustomFilters.sudo_user)
 unauthorize_handler = CommandHandler(command=BotCommands.UnAuthorizeCommand, callback=unauthorize,
-                                     filters=CustomFilters.owner_filter & Filters.group)
                                     filters=CustomFilters.owner_filter | CustomFilters.sudo_user)
 addsudo_handler = CommandHandler(command=BotCommands.AddSudoCommand, callback=addSudo,
                                     filters=CustomFilters.owner_filter)
