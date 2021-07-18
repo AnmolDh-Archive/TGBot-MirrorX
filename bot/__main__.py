@@ -5,6 +5,7 @@ import signal
 from sys import executable
 import time
 
+from telegram import BotCommand
 from telegram.ext import CommandHandler
 from bot import bot, dispatcher, updater, botStartTime
 from bot.helper.ext_utils import fs_utils
