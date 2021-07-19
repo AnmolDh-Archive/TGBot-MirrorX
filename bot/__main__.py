@@ -18,7 +18,6 @@ from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clon
 from pyrogram import idle
 from bot import app
 
-now=datetime.now(pytz.timezone('Asia/Kolkata'))
 
 def stats(update, context):
     currentTime = get_readable_time(time.time() - botStartTime)
