@@ -224,7 +224,7 @@ def github(url: str) -> str:
 
 
 def hxfile(url: str) -> str:
-    """ Racaty direct link generator
+    """ hxfile direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
     dl_url=bypasser.bypass_filesIm(url)
